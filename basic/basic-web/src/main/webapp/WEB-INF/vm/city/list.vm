@@ -1,0 +1,8 @@
+#parse("common/default-layout-head.vm")
+${page_title}:
+<ul>
+#foreach($item in $data)
+<li>${item.cityId}-${item.cityName}-${item.cityCode}-${item.lat}-${item.lng}</li>
+#end
+</ul>
+#parse("common/default-layout-tail.vm")

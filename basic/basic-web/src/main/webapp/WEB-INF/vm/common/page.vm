@@ -1,0 +1,40 @@
+<div class="row">
+<div class="col-md-12" style="text-align: left;">
+<ul class="pagination">
+<li><a>共找到$pagedata.totalCount条记录</a></li>
+	#if($pagedata.pageNo >1 )
+		#set($pagePrevNo = ${pagedata.pageNo} - 1)
+      <li><a href="$!pageUrl.getPagedUrl("$!request.getRequestURL()","pageNo","$!request.getQueryString()",$pagePrevNo)">&laquo; Pre</a></li>
+    #end
+
+	#if($pagedata.pageNo >5)
+            <li><a href="$!pageUrl.getPagedUrl("$!request.getRequestURL()","pageNo","$!request.getQueryString()",1)"">1</a></li>
+            <li><a href="$!pageUrl.getPagedUrl("$!request.getRequestURL()","pageNo","$!request.getQueryString()",2)"">2</a></li>
+            <li><span class=ellipsis>…</span></li>
+	#end
+	#set($pageFrom = ${pagedata.pageNo} - 3)
+	#set($pageTo = ${pagedata.pageNo} + 5)
+	#foreach($pageCount in [$pageFrom .. $pageTo])
+		#if($pageCount > 0 && $pageCount < $pagedata.totalPage+1 )
+			<li class="#if($pageCount == $pagedata.pageNo) active #end">
+                #if($pageCount != $pagedata.pageNo )
+                    <a href="$!pageUrl.getPagedUrl("$!request.getRequestURL()","pageNo","$!request.getQueryString()",$pageCount)">$pageCount</a>
+                #else
+                    <a href=""><strong>$pageCount</strong></a>
+                #end
+            </li>
+		#end	
+	#end
+	#if($pagedata.pageNo < $pagedata.totalPage - 5)
+		<li><span class=ellipsis>…</span></li>
+		#set($pageSub = ${pagedata.totalPage} - 1)
+        <li><a href="$!pageUrl.getPagedUrl("$!request.getRequestURL()","pageNo","$!request.getQueryString()",$pageSub)">$pageSub</a></li>
+        <li><a href="$!pageUrl.getPagedUrl("$!request.getRequestURL()","pageNo","$!request.getQueryString()",$pagedata.totalCount)">$pagedata.totalPage</a></li>
+	#end
+	#if($pagedata.pageNo < $pagedata.totalPage)
+		#set($pageNoPlus = ${pagedata.pageNo} + 1)
+		<li><a href="$!pageUrl.getPagedUrl("$!request.getRequestURL()","pageNo","$!request.getQueryString()",$pageNoPlus)">Next &raquo;</a></li>
+	#end
+</ul>
+</div>
+</div>

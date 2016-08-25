@@ -1,0 +1,6 @@
+	<script type="text/javascript" src="${WEB_RESOURCE.staticAddress}#springUrl("/static/js/common/jquery-2.1.1.min.js")?version=${WEB_RESOURCE.staticVersion}" ></script>
+	<script type="text/javascript" src="${WEB_RESOURCE.staticAddress}#springUrl("/static/js/common/bootstrap.min.js")?version=${WEB_RESOURCE.staticVersion}" ></script>
+	<script type="text/javascript" src="${WEB_RESOURCE.staticAddress}#springUrl("/static/js/common/bootstrap-datepicker.js")?version=${WEB_RESOURCE.staticVersion}" ></script>
+	<script type="text/javascript" src="${WEB_RESOURCE.staticAddress}#springUrl("/static/js/common/bootstrap-datepicker.zh-CN.js")?version=${WEB_RESOURCE.staticVersion}" ></script>
+</body>
+</html>

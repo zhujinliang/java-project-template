@@ -1,0 +1,9 @@
+<html>
+<head>
+    <meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="${WEB_RESOURCE.staticAddress}#springUrl("/static/css/common/bootstrap.min.css")?version=${WEB_RESOURCE.staticVersion}">
+	<link rel="stylesheet" type="text/css" href="${WEB_RESOURCE.staticAddress}#springUrl("/static/css/common/datepicker3.css")?version=${WEB_RESOURCE.staticVersion}">
+	
+    <title>${page_title} - one</title>
+</head>
+<body>
