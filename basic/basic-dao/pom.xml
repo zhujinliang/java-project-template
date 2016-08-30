@@ -14,18 +14,30 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+    <build>
+        <finalName>mybatis_generator</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.mybatis.generator</groupId>
+                <artifactId>mybatis-generator-maven-plugin</artifactId>
+                <version>1.3.2</version>
+            </plugin>
+        </plugins>
+    </build>
 	<dependencies>
-		<dependency>
-			<groupId>com.dada.common</groupId>
-			<artifactId>dada-common-dao</artifactId>
-		</dependency>
-		<dependency>
-            <groupId>com.dada.{basic}</groupId>
-            <artifactId>{basic}-common</artifactId>
-		</dependency>
-                <dependency>
-                    <groupId>com.dada.{basic}</groupId>
-                    <artifactId>{basic}-model</artifactId>
-                </dependency>
-	</dependencies>
+    <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.32</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.2.8</version>
+        </dependency>
 </project>
