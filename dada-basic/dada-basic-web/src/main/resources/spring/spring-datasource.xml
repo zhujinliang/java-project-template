@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+	">
+
+
+	<bean id="dataSourceAspectJ" class="com.dada.base.db.datasource.aspectj.DataSourceAspectJ"/>
+
+	<aop:config proxy-target-class="true" >
+		<aop:aspect id="dataSourceAspect" ref="dataSourceAspectJ" order="2">
+			<aop:pointcut id="serviceMethodPointcut" expression="execution(* com.dada.basic.service..*Service*.*(..))" />
+			<aop:around method="switchDataSourceAroundAdvice" pointcut-ref="serviceMethodPointcut"/>
+		</aop:aspect>
+	</aop:config>
+
+	<bean id="dataSource" class="com.dada.base.db.datasource.StackRoutingDataSource">
+		<property name="targetDataSources">
+			<map key-type="java.lang.String">
+				<entry key="service" value-ref="dada" />
+				<entry key="dada" value-ref="dada" />
+			</map>
+		</property>
+		<property name="defaultTargetDataSource" ref="dada" />
+	</bean>
+
+	<bean id="dada" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+	   <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+	   <property name="url" value="${dada.jdbc.url}" />
+	   <property name="username" value="${dada.jdbc.username}"/>
+	   <property name="password" value="${dada.jdbc.password}"/>
+	   <property name="initialSize" value="5"/>
+       <property name="maxActive" value="100"/>
+	</bean>
+
+
+
+</beans>

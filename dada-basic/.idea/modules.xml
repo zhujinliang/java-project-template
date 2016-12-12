@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/dada-basic.iml" filepath="$PROJECT_DIR$/dada-basic.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dada-basic-core/dada-basic-core.iml" filepath="$PROJECT_DIR$/dada-basic-core/dada-basic-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dada-basic-dao/dada-basic-dao.iml" filepath="$PROJECT_DIR$/dada-basic-dao/dada-basic-dao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dada-basic-service/dada-basic-service.iml" filepath="$PROJECT_DIR$/dada-basic-service/dada-basic-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dada-basic-web/dada-basic-web.iml" filepath="$PROJECT_DIR$/dada-basic-web/dada-basic-web.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.0.xsd
+	">
+
+    <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
+        <property name="maxIdle" value="${redis.pool.maxIdle}"/>
+        <property name="maxTotal" value="${redis.pool.maxActive}"/>
+    </bean>
+
+    <bean id="jedisConnFactory" class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
+          p:port="${redis.port}" p:password="${redis.pass}"
+          p:hostName="${redis.host}" p:poolConfig-ref="poolConfig"/>
+
+    <bean id="redisTemplate" class="com.dada.base.redis.template.ObjectRedisTemplate">
+        <property name="connectionFactory" ref="jedisConnFactory"/>
+    </bean>
+
+    <bean id="jsonRedisTemplate" class="com.dada.base.redis.JsonRedisTemplate">
+        <property name="connectionFactory" ref="jedisConnFactory"/>
+    </bean>
+
+    <bean id="dadaRedis" class="com.dada.base.redis.DadaRedis">
+        <constructor-arg ref="redisTemplate" />
+    </bean>
+
+    <bean id="redisCacheAspectJ" class="com.dada.base.redis.aspectj.RedisCacheAspectJ">
+        <property name="dadaRedis" ref="dadaRedis" />
+        <property name="enableMethodCache" value="${enable.method.cache:true}"/>
+    </bean>
+
+    <aop:config proxy-target-class="true">
+        <aop:aspect id="redisCacheAspect" ref="redisCacheAspectJ" order="1">
+            <aop:pointcut id="redisMethodPointcut" expression="execution(@com.dada.base.redis.annotation.RedisCacheable * *(..))" />
+            <aop:around method="checkMethodCached" pointcut-ref="redisMethodPointcut"/>
+        </aop:aspect>
+    </aop:config>
+
+</beans>

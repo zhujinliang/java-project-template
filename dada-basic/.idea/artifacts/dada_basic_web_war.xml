@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="dada-basic-web:war">
+    <output-path>$PROJECT_DIR$/dada-basic-web/target</output-path>
+    <root id="archive" name="dada-basic-web-dev.war">
+      <element id="artifact" artifact-name="dada-basic-web:war exploded" />
+    </root>
+  </artifact>
+</component>

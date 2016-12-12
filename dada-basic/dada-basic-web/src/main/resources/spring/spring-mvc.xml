@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
+        ">
+
+    <context:annotation-config />
+    <aop:aspectj-autoproxy proxy-target-class="true" />
+
+    <context:component-scan base-package="com.dada.basic.dao">
+        <context:include-filter type="regex" expression="..*.*Dao"/>
+    </context:component-scan>
+
+    <context:component-scan base-package="com.dada.basic.service">
+        <context:include-filter type="regex" expression="..*.*Service"/>
+    </context:component-scan>
+
+    <context:component-scan base-package="com.dada.basic.web">
+        <context:include-filter type="regex" expression="..*.*Controller"/>
+    </context:component-scan>
+
+    <import resource="classpath:spring/spring-datasource.xml"/>
+    <import resource="classpath:spring/spring-mybatis.xml"/>
+
+    <import resource="classpath:spring/spring-config.xml"/>
+    <import resource="classpath:spring/spring-discovery.xml" />
+    <import resource="classpath:spring/spring-kafka.xml" />
+    <import resource="classpath:spring/spring-redis.xml" />
+
+    <bean id="propertyConfigurer" class="com.dada.base.config.util.PropertyHolder">
+        <constructor-arg index="0" ref="configService" />
+    </bean>
+
+    <mvc:annotation-driven validator="validator" />
+
+    <bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"/>
+
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="providerClass" value="org.hibernate.validator.HibernateValidator"/>
+        <property name="validationMessageSource" ref="messageSource"/>
+    </bean>
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:messages</value>
+                <value>classpath:org/hibernate/validator/ValidationMessages</value>
+            </list>
+        </property>
+        <property name="useCodeAsDefaultMessage" value="false"/>
+        <property name="defaultEncoding" value="UTF-8"/>
+        <property name="cacheSeconds" value="60"/>
+    </bean>
+
+
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="messageConverters">
+            <list>
+                <ref bean="mappingJacksonHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="objectMapper" class="org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean">
+        <property name="serializationInclusion" value="NON_NULL"/>
+    </bean>
+
+    <bean id="mappingJacksonHttpMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="objectMapper" ref="objectMapper"/>
+        <property name="supportedMediaTypes">
+            <list>
+                <bean class="org.springframework.http.MediaType">
+                    <constructor-arg index="0" value="text" />
+                    <constructor-arg index="1" value="plain" />
+                    <constructor-arg index="2" value="UTF-8" />
+                </bean>
+                <bean class="org.springframework.http.MediaType">
+                    <constructor-arg index="0" value="*" />
+                    <constructor-arg index="1" value="*" />
+                    <constructor-arg index="2" value="UTF-8" />
+                </bean>
+            </list>
+        </property>
+    </bean>
+
+    <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+        <property name="order" value="1"/>
+        <property name="contentNegotiationManager" ref="contentNegotiationManager"/>
+        <property name="viewResolvers">
+            <list>
+                <bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+                <ref bean="jspViewResolver"/>
+            </list>
+        </property>
+        <property name="defaultViews">
+            <list>
+                <bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+        <property name="favorPathExtension" value="true"/>
+        <property name="favorParameter" value="true"/>
+        <property name="parameterName" value="format"/>
+        <property name="ignoreAcceptHeader" value="false"/><!-- 是否忽略Accept Header -->
+        <property name="mediaTypes"> <!--扩展名到MIME的映射；favorPathExtension, favorParameter是true时起作用 -->
+            <map>
+                <entry key="html" value="text/html"/>
+                <entry key="json" value="application/json"/>
+                <entry key="xml" value="application/xml"/>
+            </map>
+        </property>
+        <property name="defaultContentType" value="text/html"/><!-- 默认的content label -->
+    </bean>
+
+    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/jsp/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+
+    <bean id="exceptionResolver" class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+        <property name="exceptionMappings">
+            <props>
+                <prop key="java.lang.Exception">error/errorpage</prop>
+            </props>
+        </property>
+    </bean>
+
+
+    <!-- set upload file max size is 10MB 10485760 -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="defaultEncoding" value="utf-8" />
+        <property name="resolveLazily" value="true" />
+        <property name="maxUploadSize" value="10485760" />
+    </bean>
+
+    <mvc:default-servlet-handler />
+
+    <!-- 开启参数签名
+    <mvc:interceptors>
+        <bean class="com.dada.base.web.interceptor.ParamSignatureVerifier">
+            <property name="ignoreUrls">
+                <list>
+                    <value>/v1/sample/getAreaById</value>
+                </list>
+            </property>
+            <property name="signer">
+                <bean class="com.dada.base.core.sign.ApiSigner">
+                    <constructor-arg index="0" value="100010" />
+                    <constructor-arg index="1" value="Athens" />
+                    <property name="signatureName" value="sign" />
+                </bean>
+            </property>
+        </bean>
+    </mvc:interceptors>
+    -->
+
+</beans>

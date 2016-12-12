@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="off" monitorInterval="1800">
+	<properties>
+		<property name="LOG_HOME">/data/logs/java</property>
+		<property name="BACKUP_HOME">{LOG_HOME}/backup</property>
+		<property name="STAT_NAME">stat</property>
+		<property name="SERVER_NAME">dada-basic</property>
+	</properties>
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT" follow="true">
+			<PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+		</Console>
+		<RollingRandomAccessFile name="ServerLog" fileName="${LOG_HOME}/${SERVER_NAME}"
+								 filePattern="${LOG_HOME}/${SERVER_NAME}.%d{yyyy-MM-dd}.log">
+			<PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="24" modulate="true" />
+			</Policies>
+		</RollingRandomAccessFile>
+
+		<RollingRandomAccessFile name="ErrorLog" fileName="${LOG_HOME}/${SERVER_NAME}-error"
+														 filePattern="${LOG_HOME}/${SERVER_NAME}-error.%d{yyyy-MM-dd}.log">
+				<ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+				<PatternLayout pattern="%date{yyyy-MM-dd HH:mm:ss.SSS} %level [%thread][%file:%line] - %msg%n" />
+				<Policies>
+						<TimeBasedTriggeringPolicy interval="24" modulate="true" />
+				</Policies>
+		</RollingRandomAccessFile>
+	</appenders>
+	<loggers>
+		<logger name="org.springframework" level="INFO" />
+		<logger name="org.apache" level="INFO" />
+		<logger name="sun.org" level="INFO" />
+		<logger name="com.alibaba" level="INFO" />
+
+		<logger name="com.dada.basic" level="INFO" />
+
+		<!-- Root Logger -->
+		<root level="INFO">
+			<appender-ref ref="ErrorLog" />
+			<appender-ref ref="ServerLog" />
+			<appender-ref ref="Console" />
+		</root>
+	</loggers>
+</configuration>
